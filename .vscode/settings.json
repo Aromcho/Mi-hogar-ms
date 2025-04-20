@@ -1,0 +1,10 @@
+{
+    "workbench.iconTheme": "material-icon-theme",
+    "material-icon-theme.files.associations": {
+    "*.ts": "nest",
+    "*.service.ts": "nest-service",
+    "*.module.ts": "nest-module",
+    "*.controller.ts": "nest-controller"
+  }
+}
+  

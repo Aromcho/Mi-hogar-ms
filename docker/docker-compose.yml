@@ -1,0 +1,158 @@
+version: '3.8'
+
+services:
+  ### 🔹 MongoDB (local, opcional) ###
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - mi-hogar-network
+
+  ### 🔹 RabbitMQ ###
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - mi-hogar-network
+
+  ### 🔹 Redis ###
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - mi-hogar-network
+
+  ### 🔹 Microservicios ###
+
+  users:
+    build:
+      context: ..
+      dockerfile: apps/users/Dockerfile
+    container_name: users-service
+    ports:
+      - "3000:3000"
+    restart: always
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_URL: amqp://admin:password@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - mi-hogar-network
+
+  auth:
+    build:
+      context: ..
+      dockerfile: apps/auth/Dockerfile
+    container_name: auth-service
+    ports:
+      - "3002:3002"
+    restart: always
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_URL: amqp://admin:password@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - mi-hogar-network
+
+  properties:
+    build:
+      context: ..
+      dockerfile: apps/properties/Dockerfile
+    container_name: properties-service
+    ports:
+      - "3003:3003"
+    restart: always
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_URL: amqp://admin:password@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - mi-hogar-network
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: apps/gateway/Dockerfile
+    container_name: gateway-service
+    ports:
+      - "4000:4000"  
+    restart: always
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_URL: amqp://admin:password@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - mi-hogar-network
+
+  articles:
+    build:
+      context: ..
+      dockerfile: apps/articles/Dockerfile
+    container_name: articles-service
+    restart: always
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_URL: amqp://admin:password@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - mi-hogar-network
+    ports:
+      - "3004:3004"
+
+  developments:
+    build:
+      context: ..
+      dockerfile: apps/developments/Dockerfile
+    container_name: developments-service
+    ports:
+      - "3005:3005"
+    restart: always
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_URL: amqp://admin:password@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - mi-hogar-network
+
+volumes:
+  mongodb_data:
+  rabbitmq_data:
+  redis_data:
+
+networks:
+  mi-hogar-network:
+    driver: bridge
