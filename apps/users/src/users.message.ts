@@ -38,4 +38,19 @@ export class UsersMessageController {
   async delete(@Payload() data: { id: string }) {
     return this.usersService.deleteByMongoId(data.id);
   }
+
+  @MessagePattern({ cmd: 'find_or_create_google' })
+async handleGoogleUser(@Payload() data: { googleId: string; email: string; name: string }) {
+  const user = await this.usersService.findOneByEmail(data.email); // <- corregido
+  if (user) return user;
+
+  return await this.usersService.create({
+    email: data.email,
+    name: data.name,
+    googleId: data.googleId,
+    password: data.googleId, // podés hashearlo si querés
+  });
+}
+
+
 }

@@ -6,5 +6,7 @@ export class UserEntity {
     address?: string;
     logo?: string;
     role?: string;
+    branchId?: string; // Relación con la sucursal
+    favorites?: string[]; // Relación con propiedades favoritas
   }
   

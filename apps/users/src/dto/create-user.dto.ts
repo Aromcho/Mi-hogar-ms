@@ -18,4 +18,7 @@ export class CreateUserDto {
 
   @IsOptional()
   role?: string;
+  
+  @IsOptional()
+  googleId?: string;
 }

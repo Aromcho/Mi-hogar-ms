@@ -55,4 +55,9 @@ export class AuthService {
 
     return user;
   }
+  async generateToken(user: any) {
+    const payload = { id: user._id || user.id, email: user.email, role: user.role };
+    return this.jwtService.sign(payload);
+  }
+  
 }
