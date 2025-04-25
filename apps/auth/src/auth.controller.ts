@@ -8,33 +8,37 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-async login(
-  @Body() body: { email: string; password: string },
-  @Res({ passthrough: true }) res: Response
-) {
-  try {
-    const user = await this.authService.validateUser(body.email, body.password);
-    const { access_token } = await this.authService.login(user);
+  async login(
+    @Body() body: { email: string; password: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const user = await this.authService.validateUser(
+        body.email,
+        body.password,
+      );
+      const { access_token } = await this.authService.login(user);
 
-    res.cookie('token', access_token, {
-      httpOnly: true,
-      secure: false, // ✅ asegurate de que sea false en desarrollo
-      sameSite: 'lax', // ✅ para que funcione en desarrollo local
-      maxAge: 15 * 24 * 60 * 60 * 1000,
-    });
+      res.cookie('token', access_token, {
+        httpOnly: true,
+        secure: false, // ✅ asegurate de que sea false en desarrollo
+        sameSite: 'lax', // ✅ para que funcione en desarrollo local
+        maxAge: 15 * 24 * 60 * 60 * 1000,
+      });
 
-    return { message: 'Login exitoso', user };
-  } catch (error) {
-    throw new UnauthorizedException('Credenciales inválidas');
+      return { message: 'Login exitoso', user };
+    } catch (error) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
   }
-}
-
 
   @Get('me')
   async getProfile(@Req() req: Request) {
     const token = req.cookies?.token;
     if (!token) {
-      throw new UnauthorizedException('No autenticado (Token no encontrado en cookies)');
+      throw new UnauthorizedException(
+        'No autenticado (Token no encontrado en cookies)',
+      );
     }
 
     try {
@@ -66,7 +70,9 @@ async login(
     const token = await this.authService.generateToken(user);
     const name = encodeURIComponent(user.name);
     const userId = user._id || user.id;
-    res.redirect(`exp://192.168.0.6:8081?token=${token}&name=${name}&user_id=${userId}`);
+    res.redirect(
+      `exp://192.168.0.6:8081?token=${token}&name=${name}&user_id=${userId}`,
+    );
   }
 
   // 🟢 GOOGLE WEB

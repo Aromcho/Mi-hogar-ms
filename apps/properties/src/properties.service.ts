@@ -53,7 +53,7 @@ export class PropertiesService {
     const {
       operation_type, property_type, minRooms, maxRooms,
       minPrice, maxPrice, barrio, searchQuery, garages,
-      limit = 10, offset = 0, order = 'DESC',
+      limit = 20, offset = 0, order = 'DESC',
     } = dto;
   
     const filter: Record<string, any> = {};

@@ -10,6 +10,6 @@ async function bootstrap() {
     origin: '*', 
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, transformOptions: { enableImplicitConversion: true } }));
-  await app.listen(3003, '0.0.0.0');
+  await app.listen(3003);
 }
 bootstrap();

@@ -7,6 +7,10 @@ async function bootstrap() {
     logger: ['log', 'debug', 'error', 'warn'],
   });
 
+  app.enableCors({
+    origin: 'http://localhost:5005', // 👈 tu frontend Next.js
+    credentials: true, // 👈 permite cookies
+  });
   // 🔹 Configuración del microservicio con RabbitMQ
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
@@ -16,6 +20,9 @@ async function bootstrap() {
       queueOptions: { durable: false },
     },
   });
+
+  
+  
 
   await app.startAllMicroservices(); // Levanta RabbitMQ listener
   await app.listen(3000, '0.0.0.0'); // Levanta API REST
