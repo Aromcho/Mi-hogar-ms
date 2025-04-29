@@ -21,9 +21,6 @@ async function bootstrap() {
     },
   });
 
-  
-  
-
   await app.startAllMicroservices(); // Levanta RabbitMQ listener
   await app.listen(3000, '0.0.0.0'); // Levanta API REST
 

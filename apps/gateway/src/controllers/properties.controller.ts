@@ -8,17 +8,17 @@ export class PropertiesController {
 
   @Get()
   findAll() {
-    return this.messagingService.sendMessage({ cmd: 'get_all_properties' }, {});
+    return this.messagingService.sendMessage('properties', { cmd: 'get_all_properties' }, {});
   }
 
   @Get('/:id')
   findOne(@Param('id') id: string) {
-    return this.messagingService.sendMessage({ cmd: 'get_property_by_id' }, id);
+    return this.messagingService.sendMessage('properties',{ cmd: 'get_property_by_id' }, id);
   }
 
   @Get('/by-agent/:agentId')
   findByAgentId(@Param('agentId') agentId: string) {
-    return this.messagingService.sendMessage({ cmd: 'get_properties_by_agent' }, agentId);
+    return this.messagingService.sendMessage('properties',{ cmd: 'get_properties_by_agent' }, agentId);
   }
 
   @Get('/by-branch/:id')
@@ -28,6 +28,7 @@ export class PropertiesController {
     @Query('limit') limit = 10,
   ) {
     return this.messagingService.sendMessage(
+      'properties',
       { cmd: 'get_properties_by_branch' },
       { id, page: Number(page), limit: Number(limit) },
     );
@@ -36,6 +37,7 @@ export class PropertiesController {
   @Post()
   create(@Req() req: Request, @Body() dto: any) {
     return this.messagingService.sendMessage(
+      'properties',
       { cmd: 'create_property' },
       { user: req['user'], dto },
     );
@@ -44,6 +46,7 @@ export class PropertiesController {
   @Put('/:id')
   update(@Param('id') id: string, @Req() req: Request, @Body() dto: any) {
     return this.messagingService.sendMessage(
+      'properties',
       { cmd: 'update_property' },
       { id, user: req['user'], dto },
     );
@@ -52,6 +55,7 @@ export class PropertiesController {
   @Delete('/:id')
   delete(@Param('id') id: string, @Req() req: Request) {
     return this.messagingService.sendMessage(
+      'properties',
       { cmd: 'delete_property' },
       { id, user: req['user'] },
     );

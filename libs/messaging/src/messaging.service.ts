@@ -3,10 +3,10 @@ import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservice
 
 @Injectable()
 export class MessagingService {
-  private client: ClientProxy;
+  private clients: Record<string, ClientProxy> = {};
 
   constructor() {
-    this.client = ClientProxyFactory.create({
+    this.clients['users'] = ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
         urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
@@ -14,10 +14,31 @@ export class MessagingService {
         queueOptions: { durable: false },
       },
     });
+
+    this.clients['properties'] = ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
+        queue: 'properties_queue',
+        queueOptions: { durable: false },
+      },
+    });
+
+    this.clients['autocomplete'] = ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
+        queue: 'autocomplete_queue',
+        queueOptions: { durable: false },
+      },
+    });
   }
 
-  // 🔹 Método para enviar mensajes a otros microservicios
-  async sendMessage(pattern: any, data: any) {
-    return this.client.send(pattern, data).toPromise();
+  async sendMessage(service: 'users' | 'properties' | 'autocomplete', pattern: any, data: any) {
+    const client = this.clients[service];
+    if (!client) {
+      throw new Error(`Service ${service} not found`);
+    }
+    return client.send(pattern, data).toPromise();
   }
 }
