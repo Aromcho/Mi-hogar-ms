@@ -5,12 +5,13 @@ import { Property, PropertySchema } from './schemas/property.schema';
 import { PropertiesService } from './properties.service';
 import { PropertiesController } from './properties.controller';
 import { DatabaseModule } from '../../../libs/database/src/database.module';
+import { User, UserSchema } from '../../users/src/schemas/user.schema'; // ajustá el path
 import { PropertiesMessageController } from './properties.message';
 
 @Module({
   imports: [
     DatabaseModule,
-    MongooseModule.forFeature([{ name: Property.name, schema: PropertySchema }]),
+    MongooseModule.forFeature([{ name: Property.name, schema: PropertySchema },{ name: User.name, schema: UserSchema },]),
     ClientsModule.register([
       {
         name: 'USER_SERVICE',

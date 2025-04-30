@@ -8,7 +8,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { FilterPropertiesDto } from './dto/filter-properties.dto';
 
 // Define the PaginateResult interface
-interface PaginateResult<T> {
+export interface PaginateResult<T> {
   docs: T[];
   totalDocs: number;
   limit: number;
@@ -59,8 +59,8 @@ export class PropertiesService {
     const filter: Record<string, any> = {};
   
     /* --- filtros --- */
-    if (operation_type?.length) filter['operations.operation_type'] = { $in: operation_type };
-    if (property_type?.length)  filter['type.name']                = { $in: property_type };
+    if (operation_type?.length) filter['operations.operation_type'] = { $in: Array.isArray(operation_type) ? operation_type : [operation_type], };
+    if (property_type?.length)  filter['type.name']                = { $in: Array.isArray(property_type) ? property_type : [property_type], };
   
     if (minRooms !== undefined || maxRooms !== undefined) {
       filter.suite_amount = {};

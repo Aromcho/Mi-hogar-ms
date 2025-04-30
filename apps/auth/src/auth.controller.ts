@@ -37,7 +37,7 @@ export class AuthController {
     const token = req.cookies?.token;
     if (!token) {
       throw new UnauthorizedException(
-        'No autenticado (Token no encontrado en cookies)',
+        'No autenticado',
       );
     }
 

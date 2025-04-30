@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { PropertiesService } from './properties.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
@@ -11,6 +11,11 @@ export class PropertiesMessageController {
   @MessagePattern({ cmd: 'get_all_properties' })
   findAll() {
     return this.propertiesService.findAll();
+  }
+
+  @MessagePattern({ cmd: 'search_properties' })
+  search(@Payload() query: any) {
+    return this.propertiesService.search(query);
   }
 
   @MessagePattern({ cmd: 'get_property_by_id' })
@@ -25,7 +30,11 @@ export class PropertiesMessageController {
 
   @MessagePattern({ cmd: 'get_properties_by_branch' })
   findByBranchId(data: { id: string; page: number; limit: number }) {
-    return this.propertiesService.findByBranchId(data.id, data.page, data.limit);
+    return this.propertiesService.findByBranchId(
+      data.id,
+      data.page,
+      data.limit,
+    );
   }
 
   @MessagePattern({ cmd: 'create_property' })

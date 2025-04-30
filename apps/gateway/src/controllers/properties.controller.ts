@@ -11,6 +11,11 @@ export class PropertiesController {
     return this.messagingService.sendMessage('properties', { cmd: 'get_all_properties' }, {});
   }
 
+  @Get('/search')
+  search(@Query() query: any) {
+    return this.messagingService.sendMessage('properties', { cmd: 'search_properties' }, query);
+  }
+
   @Get('/:id')
   findOne(@Param('id') id: string) {
     return this.messagingService.sendMessage('properties',{ cmd: 'get_property_by_id' }, id);

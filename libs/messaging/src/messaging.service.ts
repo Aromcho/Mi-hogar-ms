@@ -32,9 +32,18 @@ export class MessagingService {
         queueOptions: { durable: false },
       },
     });
+
+    this.clients['auth'] = ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: [process.env.RABBITMQ_URL || 'amqp://localhost:5672'],
+        queue: 'auth_queue',
+        queueOptions: { durable: false },
+      },
+    });
   }
 
-  async sendMessage(service: 'users' | 'properties' | 'autocomplete', pattern: any, data: any) {
+  async sendMessage(service: 'users' | 'properties' | 'autocomplete' | 'auth', pattern: any, data: any) {
     const client = this.clients[service];
     if (!client) {
       throw new Error(`Service ${service} not found`);

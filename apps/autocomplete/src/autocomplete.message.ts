@@ -10,7 +10,6 @@ export class AutocompleteMessageController {
 
   @MessagePattern({ cmd: 'autocomplete_search' })
   async search(@Payload() data: { query: string }) {
-    this.logger.log(`📨 Recibido mensaje para autocomplete: ${JSON.stringify(data)}`);
     return this.autocompleteService.search(data.query);
   }
 }
