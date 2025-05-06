@@ -55,6 +55,15 @@ export class AuthService {
 
     return user;
   }
+  async handleGoogleCallback(query: any) {
+    // validás el código, obtenés datos desde Google y encontrás o creás el usuario
+    return this.validateGoogleUser({
+      googleId: query.code, // adaptá según qué datos Google te devuelva
+      email: 'ejemplo@correo.com',
+      name: 'Usuario',
+    });
+  }
+  
   async generateToken(user: any) {
     const payload = { id: user._id || user.id, email: user.email, role: user.role };
     return this.jwtService.sign(payload);

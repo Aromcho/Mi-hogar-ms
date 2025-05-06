@@ -22,4 +22,46 @@ export class AuthMessageController {
   async logout() {
     return { message: 'Logout exitoso' };
   }
+
+  @MessagePattern({ cmd: 'google_web_init' })
+googleWebInit() {
+  const redirectUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+  redirectUrl.searchParams.set('client_id', process.env.GOOGLE_CLIENT_ID || '');
+  redirectUrl.searchParams.set('redirect_uri', 'https://api.mi-hogar.online/auth/google/web/callback');
+  redirectUrl.searchParams.set('response_type', 'code');
+  redirectUrl.searchParams.set('scope', 'openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile');
+  redirectUrl.searchParams.set('access_type', 'offline');
+  redirectUrl.searchParams.set('prompt', 'consent');
+
+  console.log('Redirect URL:', redirectUrl.toString());
+
+  return { redirectUrl: redirectUrl.toString() };
+}
+
+
+
+  @MessagePattern({ cmd: 'google_mobile_init' })
+  googleMobileInit() {
+    const redirectUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+    redirectUrl.searchParams.set('client_id', process.env.GOOGLE_CLIENT_ID || '');
+    redirectUrl.searchParams.set('redirect_uri', process.env.GOOGLE_CALLBACK_URL || '');
+    redirectUrl.searchParams.set('response_type', 'code');
+    redirectUrl.searchParams.set('scope', 'openid email profile');
+    redirectUrl.searchParams.set('access_type', 'offline');
+    redirectUrl.searchParams.set('prompt', 'consent');
+
+    return { redirectUrl: redirectUrl.toString() };
+  }
+
+  @MessagePattern({ cmd: 'google_web_callback' })
+  async googleWebCallback(@Payload() data: { code: string; state?: string }) {
+    const user = await this.authService.handleGoogleCallback(data.code);
+    const token = await this.authService.generateToken(user);
+
+    return {
+      token,
+      name: encodeURIComponent(user.name),
+      userId: user._id || user.id,
+    };
+  }
 }

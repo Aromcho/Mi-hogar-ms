@@ -1,10 +1,10 @@
 import { Controller, Post, Get, Req, Res, Body } from '@nestjs/common';
-import { MessagingService } from '../../../../libs/messaging/src/messaging.service';
+import { MessagingService } from 'libs/messaging';
 import { Request, Response } from 'express';
 
 @Controller('auth')
 export class AuthGatewayController {
-  constructor(private readonly messagingService: MessagingService) {}
+  constructor(private readonly messagingService: MessagingService) { }
 
   @Post('login')
   async login(@Body() body: any, @Res({ passthrough: true }) res: Response) {
@@ -47,38 +47,63 @@ export class AuthGatewayController {
   // 🟢 GOOGLE WEB
   @Get('google/web')
   async googleWebInit(@Res() res: Response) {
-    return this.messagingService.sendMessage(
+    const result = await this.messagingService.sendMessage(
       'auth',
       { cmd: 'google_web_init' },
-      { res },
+      {},
     );
+
+    // Redireccionás desde el Gateway (no desde el microservicio)
+    return res.redirect(result.redirectUrl);
   }
+
 
   @Get('google/web/callback')
   async googleWebCallback(@Req() req: Request, @Res() res: Response) {
-    return this.messagingService.sendMessage(
+    const { code, state } = req.query;
+
+    const result = await this.messagingService.sendMessage(
       'auth',
       { cmd: 'google_web_callback' },
-      { query: req.query, res },
+      { code, state },
     );
+
+    const { token, name, userId } = result;
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      maxAge: 15 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.redirect(`http://localhost:5005/?name=${name}&user_id=${userId}`);
   }
 
-  // 🔵 GOOGLE MOBILE
+
+
+
   @Get('google')
   async googleMobileInit(@Res() res: Response) {
-    return this.messagingService.sendMessage(
+    const result = await this.messagingService.sendMessage(
       'auth',
       { cmd: 'google_mobile_init' },
-      { res },
+      {},
     );
+
+    return res.redirect(result.redirectUrl);
   }
 
   @Get('google/callback')
   async googleMobileCallback(@Req() req: Request, @Res() res: Response) {
-    return this.messagingService.sendMessage(
+    const { code, state } = req.query;
+
+    const result = await this.messagingService.sendMessage(
       'auth',
       { cmd: 'google_mobile_callback' },
-      { query: req.query, res },
+      { code, state },
     );
+
+    return res.redirect(result.redirectUrl);
   }
 }
