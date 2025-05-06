@@ -28,6 +28,7 @@ export class AuthGatewayController {
   @Get('me')
   async me(@Req() req: Request) {
     const token = req.cookies?.token;
+    console.log('🔑 TOKEN en /auth/me:', token);
     return this.messagingService.sendMessage(
       'auth',
       { cmd: 'auth_me' },
@@ -37,11 +38,8 @@ export class AuthGatewayController {
 
   @Post('logout')
   async logout(@Res() res: Response) {
-    return this.messagingService.sendMessage(
-      'auth',
-      { cmd: 'auth_logout' },
-      {},
-    );
+    res.clearCookie('token');
+    return res.json({ message: 'Logout exitoso' });
   }
 
   // 🟢 GOOGLE WEB
@@ -77,7 +75,7 @@ export class AuthGatewayController {
       maxAge: 15 * 24 * 60 * 60 * 1000,
     });
 
-    return res.redirect(`http://localhost:5005/?name=${name}&user_id=${userId}`);
+    return res.redirect(`http://localhost:5005/`);
   }
 
 

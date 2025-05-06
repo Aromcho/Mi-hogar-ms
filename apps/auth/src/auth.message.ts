@@ -24,19 +24,22 @@ export class AuthMessageController {
   }
 
   @MessagePattern({ cmd: 'google_web_init' })
-googleWebInit() {
-  const redirectUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-  redirectUrl.searchParams.set('client_id', process.env.GOOGLE_CLIENT_ID || '');
-  redirectUrl.searchParams.set('redirect_uri', 'https://api.mi-hogar.online/auth/google/web/callback');
-  redirectUrl.searchParams.set('response_type', 'code');
-  redirectUrl.searchParams.set('scope', 'openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile');
-  redirectUrl.searchParams.set('access_type', 'offline');
-  redirectUrl.searchParams.set('prompt', 'consent');
+  googleWebInit() {
+    const redirectUri = process.env.GOOGLE_WEB_CALLBACK_URL || 'http://localhost:4000/auth/google/web/callback';
 
-  console.log('Redirect URL:', redirectUrl.toString());
+    const redirectUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+    redirectUrl.searchParams.set('client_id', process.env.GOOGLE_CLIENT_ID || '');
+    redirectUrl.searchParams.set('redirect_uri', redirectUri);
+    redirectUrl.searchParams.set('response_type', 'code');
+    redirectUrl.searchParams.set('scope', 'openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile');
+    redirectUrl.searchParams.set('access_type', 'offline');
+    redirectUrl.searchParams.set('prompt', 'consent');
 
-  return { redirectUrl: redirectUrl.toString() };
-}
+    console.log('Redirect URL:', redirectUrl.toString());
+
+    return { redirectUrl: redirectUrl.toString() };
+  }
+
 
 
 

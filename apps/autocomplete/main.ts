@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { AutocompleteModule } from './autocomplete.module';
+import { AutocompleteModule } from './src/autocomplete.module';
 import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AutocompleteModule);
   app.enableCors({
-    origin: 'http://localhost:5005',
+    origin: '*',
     credentials: false,
   });
 

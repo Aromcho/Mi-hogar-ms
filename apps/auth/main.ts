@@ -9,6 +9,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AuthModule, {logger: ['log', 'debug', 'error', 'warn'],});
   app.use(morgan('dev'));
   app.use(cookieParser());
+  app.enableCors({
+    origin: process.env.FRONTEND_URL, // ✅ el dominio de tu frontend
+    credentials: true,
+  });  
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
@@ -18,10 +22,7 @@ async function bootstrap() {
     },
   });
   await app.startAllMicroservices();
-  app.enableCors({
-    origin: '*', // o el frontend real
-    credentials: true,
-  });
+  
   await app.listen(3002, '0.0.0.0');
 }
 bootstrap();

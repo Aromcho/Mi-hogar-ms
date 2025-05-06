@@ -7,10 +7,10 @@ async function bootstrap() {
   const app = await NestFactory.create(UsersModule);
   app.use(morgan('dev'));
   app.enableCors({
-    origin: 'http://localhost:5005', // 👈 frontend Next.js
-    credentials: true, // 👈 permite cookies
+    origin: 'http://localhost:5005', 
+    credentials: true,
   });
-  // 🔹 Configuración del microservicio con RabbitMQ
+
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
@@ -20,9 +20,7 @@ async function bootstrap() {
     },
   });
 
-  await app.startAllMicroservices(); // Levanta RabbitMQ listener
-  await app.listen(3000, '0.0.0.0'); // Levanta API REST
-
-  console.log('✅ Microservicio de usuarios levantado en puerto 3000');
+  await app.startAllMicroservices(); 
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

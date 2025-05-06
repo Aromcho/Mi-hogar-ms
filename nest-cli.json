@@ -32,7 +32,7 @@
       "type": "application",
       "root": "apps/autocomplete",
       "entryFile": "main",
-      "sourceRoot": "apps/autocomplete/src",
+      "sourceRoot": "apps/autocomplete",
       "compilerOptions": {
         "tsConfigPath": "apps/autocomplete/tsconfig.app.json"
       }
