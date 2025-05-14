@@ -52,12 +52,14 @@ export class PropertiesService {
   async search(dto: FilterPropertiesDto): Promise<PaginateResult<Property>> {
     const {
       operation_type, property_type, minRooms, maxRooms,
-      minPrice, maxPrice, barrio, searchQuery, garages,
+      minPrice, maxPrice, barrio, searchQuery, garages, minBathroom,
       limit = 20, offset = 0, order = 'DESC',
     } = dto;
-  
-    const filter: Record<string, any> = {};
-  
+
+    const filter: Record<string, any> = {
+      status: 2, // ✅ Solo propiedades disponibles
+    };
+
     /* --- filtros --- */
     if (operation_type?.length) filter['operations.operation_type'] = { $in: Array.isArray(operation_type) ? operation_type : [operation_type], };
     if (property_type?.length)  filter['type.name']                = { $in: Array.isArray(property_type) ? property_type : [property_type], };
@@ -73,7 +75,10 @@ export class PropertiesService {
       if (minPrice !== undefined) filter['operations.prices.price'].$gte = minPrice;
       if (maxPrice !== undefined) filter['operations.prices.price'].$lte = maxPrice;
     }
-  
+    if (minBathroom !== undefined) {
+      filter.bathroom_amount = { $gte: minBathroom };
+    }
+
     if (barrio) filter['location.name'] = { $regex: barrio, $options: 'i' };
   
     if (searchQuery) {
@@ -148,14 +153,12 @@ export class PropertiesService {
     if (!mongoose.Types.ObjectId.isValid(agentId)) {
       throw new HttpException('ID de agente inválido', HttpStatus.BAD_REQUEST);
     }
-
+  
     const properties = await this.propertyModel.find({ agentId }).exec();
-    if (!properties.length) {
-      throw new HttpException('No se encontraron propiedades para este agente', HttpStatus.NOT_FOUND);
-    }
-
-    return properties;
+  
+    return properties; // ✅ aunque esté vacío
   }
+  
 
   async findOne(id: string) {
     return this.propertyModel.findById(id).exec();

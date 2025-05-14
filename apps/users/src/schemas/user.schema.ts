@@ -14,9 +14,6 @@ export class User extends Document {
   address: string;
 
   @Prop({ unique: true })
-  id: number;  // ⚠️ Manteniendo el ID numérico como en el CRM
-
-  @Prop({ unique: true })
   email: string;
 
   @Prop()
@@ -30,6 +27,9 @@ export class User extends Document {
 
   @Prop()
   role: UserRole;
+
+  @Prop()
+  photo: string;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Branch', required: false })
   branchId?: string; // 🔹 Relación con la sucursal

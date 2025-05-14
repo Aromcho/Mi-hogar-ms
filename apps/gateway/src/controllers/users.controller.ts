@@ -34,4 +34,25 @@ export class UsersController {
   async remove(@Param('id') id: string) {
     return this.messagingService.sendMessage('users',{ cmd: 'delete_user' }, { id });
   }
+  @Post(':id/favorites')
+  async addFavorite(@Param('id') userId: string, @Body() body: { propertyId: string }) {
+    return this.messagingService.sendMessage('users', { cmd: 'add_favorite' }, {
+      userId,
+      propertyId: body.propertyId,
+    });
+  }
+
+  @Delete(':id/favorites/:propertyId')
+  async removeFavorite(@Param('id') userId: string, @Param('propertyId') propertyId: string) {
+    return this.messagingService.sendMessage('users', { cmd: 'remove_favorite' }, {
+      userId,
+      propertyId,
+    });
+  }
+
+  @Get(':id/favorites')
+  async getFavorites(@Param('id') userId: string) {
+    return this.messagingService.sendMessage('users', { cmd: 'get_favorites' }, { userId });
+  }
+
 }

@@ -13,8 +13,22 @@ export class PropertiesController {
 
   @Get('/search')
   search(@Query() query: any) {
-    return this.messagingService.sendMessage('properties', { cmd: 'search_properties' }, query);
+    const parsedQuery = {
+      ...query,
+      minRooms: query.minRooms ? Number(query.minRooms) : undefined,
+      maxRooms: query.maxRooms ? Number(query.maxRooms) : undefined,
+      minPrice: query.minPrice ? Number(query.minPrice) : undefined,
+      maxPrice: query.maxPrice ? Number(query.maxPrice) : undefined,
+      minBathroom: query.minBathroom ? Number(query.minBathroom) : undefined,
+      garages: query.garages ? Number(query.garages) : undefined,
+      limit: query.limit ? Number(query.limit) : 20,
+      offset: query.offset ? Number(query.offset) : 0,
+      order: query.order || 'DESC',
+    };
+
+    return this.messagingService.sendMessage('properties', { cmd: 'search_properties' }, parsedQuery);
   }
+
 
   @Get('/:id')
   findOne(@Param('id') id: string) {
@@ -47,6 +61,7 @@ export class PropertiesController {
       { user: req['user'], dto },
     );
   }
+
 
   @Put('/:id')
   update(@Param('id') id: string, @Req() req: Request, @Body() dto: any) {

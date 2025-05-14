@@ -25,7 +25,7 @@ export class AuthMessageController {
 
   @MessagePattern({ cmd: 'google_web_init' })
   googleWebInit() {
-    const redirectUri = process.env.GOOGLE_WEB_CALLBACK_URL || 'http://localhost:4000/auth/google/web/callback';
+    const redirectUri = process.env.GOOGLE_WEB_CALLBACK_URL || 'https://localhost:4000/auth/google/web/callback';
 
     const redirectUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     redirectUrl.searchParams.set('client_id', process.env.GOOGLE_CLIENT_ID || '');
@@ -39,8 +39,6 @@ export class AuthMessageController {
 
     return { redirectUrl: redirectUrl.toString() };
   }
-
-
 
 
   @MessagePattern({ cmd: 'google_mobile_init' })

@@ -70,12 +70,13 @@ export class AuthGatewayController {
 
     res.cookie('token', token, {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: false,
+      sameSite: 'none', 
+      secure: true,    
       maxAge: 15 * 24 * 60 * 60 * 1000,
     });
+    
 
-    return res.redirect(`http://localhost:5005/`);
+    return res.redirect(`https://superia.mi-hogar.online/`);
   }
 
 

@@ -30,11 +30,12 @@ export class GoogleWebStrategy extends PassportStrategy(Strategy, 'google-web') 
   ) {
     const { id, displayName, emails } = profile;
     const email = emails[0].value;
-
+    const photo = profile.photos?.[0]?.value || '';
     const user = await this.authService.validateGoogleUser({
       googleId: id,
       email,
       name: displayName,
+      photo,
     });
 
     done(null, user);

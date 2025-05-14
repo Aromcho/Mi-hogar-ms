@@ -44,6 +44,11 @@ import {
     maxPrice?: number;
 
     @IsOptional()
+    @IsInt()
+    @Min(0)
+    minBathroom?: number;
+    
+    @IsOptional()
     @IsString()
     barrio?: string;
 

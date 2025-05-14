@@ -40,17 +40,35 @@ export class UsersMessageController {
   }
 
   @MessagePattern({ cmd: 'find_or_create_google' })
-async handleGoogleUser(@Payload() data: { googleId: string; email: string; name: string }) {
-  const user = await this.usersService.findOneByEmail(data.email); // <- corregido
-  if (user) return user;
+  async handleGoogleUser(
+    @Payload() data: { googleId: string; email: string; name: string; photo?: string },
+  ) {
+    const user = await this.usersService.findOneByEmail(data.email);
+    if (user) return user;
 
-  return await this.usersService.create({
-    email: data.email,
-    name: data.name,
-    googleId: data.googleId,
-    password: data.googleId, // podés hashearlo si querés
-  });
-}
+    return await this.usersService.create({
+      email: data.email,
+      name: data.name,
+      photo: data.photo || null,
+      googleId: data.googleId,
+      password: data.googleId,
+    });
+  }
 
+
+  @MessagePattern({ cmd: 'add_favorite' })
+  async addFavorite(@Payload() data: { userId: string; propertyId: string }) {
+    return this.usersService.addFavorite(data.userId, data.propertyId);
+  }
+  
+  @MessagePattern({ cmd: 'remove_favorite' })
+  async removeFavorite(@Payload() data: { userId: string; propertyId: string }) {
+    return this.usersService.removeFavorite(data.userId, data.propertyId);
+  }
+  
+  @MessagePattern({ cmd: 'get_favorites' })
+  async getFavorites(@Payload() data: { userId: string }) {
+    return this.usersService.getFavorites(data.userId);
+  }
 
 }
