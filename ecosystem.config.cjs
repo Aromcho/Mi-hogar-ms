@@ -25,5 +25,10 @@ module.exports = {
       script: "npm",
       args: "start gateway",
     },
+    {
+      name: "agencies-ms",
+      script: "npm",
+      args: "start agencies",
+    },
   ],
 };

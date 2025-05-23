@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 
 @Schema({ timestamps: true })
-export class Agency extends Document {
+export class Branch extends Document {
   @Prop({ required: true, unique: true })
   name: string;
 
@@ -49,4 +49,4 @@ export class Agency extends Document {
   isFeatured: boolean; // Para destacar en el home u ordenarlo arriba
 }
 
-export const AgencySchema = SchemaFactory.createForClass(Agency);
+export const BranchSchema = SchemaFactory.createForClass(Branch);
