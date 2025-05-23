@@ -36,8 +36,16 @@ export class Agency extends Document {
   @Prop()
   teamDescription: string; // Descripción breve del equipo
 
-  @Prop({ type: [String], default: [] })
-  socialLinks: string[]; // Ej: ['https://instagram.com/...']
+  @Prop({
+    type: [
+      {
+        platform: String, 
+        url: String, 
+      },
+    ],
+    default: [],
+  })
+  socialLinks: { platform: string; url: string }[];
 
   @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'User', default: [] })
   agents: string[];

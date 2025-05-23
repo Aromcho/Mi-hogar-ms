@@ -10,6 +10,15 @@
   "monorepo": true,
   "root": "apps/mi-hogar",
   "projects": {
+    "agencies": {
+      "type": "application",
+      "root": "apps/agencies",
+      "entryFile": "main",
+      "sourceRoot": "apps/agencies",
+      "compilerOptions": {
+        "tsConfigPath": "apps/agencies/tsconfig.app.json"
+      }
+    },
     "articles": {
       "type": "application",
       "root": "apps/articles",
