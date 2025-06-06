@@ -12,7 +12,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.use(morgan('dev'));
   app.enableCors({
-    origin: ["https://superia.mi-hogar.online", "http://localhost:5005"],
+    origin: ["https://mi-hogar.online", "http://localhost:5005"],
     credentials: true,
   });
   await app.listen(4000);

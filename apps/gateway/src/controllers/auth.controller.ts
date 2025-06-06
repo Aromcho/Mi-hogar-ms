@@ -76,7 +76,7 @@ export class AuthGatewayController {
     });
     
 
-    return res.redirect(`https://superia.mi-hogar.online/`);
+    return res.redirect(`https://mi-hogar.online/`);
   }
 
 
